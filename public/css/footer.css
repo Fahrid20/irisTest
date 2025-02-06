@@ -1,0 +1,43 @@
+footer{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background-color: black;
+    color: aliceblue;
+    position: bottom;
+    margin-top: 3em;
+
+}
+footer table {
+    justify-content: center;
+    align-items: center;
+}
+footer table thead , footer table tbody  {
+    justify-content: center;
+    align-items: center;
+}
+footer table thead tr th, footer table tbody tr td {
+    width: 25%;
+    justify-content: center;
+    align-items: center;
+}
+td, th{
+    justify-content: center;
+    align-items: center;  
+}
+.link_1, .link_2, .link_3, .link_4{
+    list-style: none;
+    text-decoration: none;
+}
+.link_1:hover, .link_2:hover, .link_3:hover, .link_4:hover{
+    list-style: none;
+    text-decoration: none;
+    opacity: 0.5;
+}
+.mail{
+    list-style: none;
+    text-decoration: none;
+    color: white;
+}
