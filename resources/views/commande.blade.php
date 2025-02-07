@@ -90,19 +90,20 @@
 <script src="https://js.stripe.com/v3/"></script>
 
 <script>
-   document.addEventListener("DOMContentLoaded", function () {
+  document.addEventListener("DOMContentLoaded", function () {
     const modePaiement = document.getElementById("mode_paiement");
     const paiementCarte = document.getElementById("paiement-carte");
     const paiementPaypal = document.getElementById("paiement-paypal");
     const paiementCash = document.getElementById("paiement-cash");
+    const form = document.querySelector("form");
 
-    // Initialisation de Stripe
+    // ✅ Initialisation de Stripe avec la bonne clé publique
     let stripe = Stripe("pk_test_51NNh6tFwHGknk4nqck1n8EPRp4UrLDXj9OyLNXho5ajKuVQsaLUTIg3vXncZjztOv5XqarktPnTkPYXS9rHFTxeE005YxHumb2");
     let elements = stripe.elements();
-    let card = elements.create('card');
-    card.mount('#card-element');
+    let card = elements.create("card");
+    card.mount("#card-element");
 
-    // Gestion de l'affichage des modes de paiement
+    // ✅ Affichage des champs en fonction du mode de paiement sélectionné
     modePaiement.addEventListener("change", function () {
         paiementCarte.classList.add("d-none");
         paiementPaypal.classList.add("d-none");
@@ -117,37 +118,44 @@
         }
     });
 
-    // Gestion des erreurs Stripe
-    card.addEventListener('change', function(event) {
-        let displayError = document.getElementById('card-errors');
-        displayError.textContent = event.error ? event.error.message : '';
-    });
-
-    // Gestion de la soumission du formulaire
-    document.querySelector('form').addEventListener('submit', function(event) {
-        event.preventDefault();
-        if (modePaiement.value === "carte") {
-            stripe.createToken(card).then(function(result) {
-                if (result.error) {
-                    document.getElementById('card-errors').textContent = result.error.message;
-                } else {
-                    stripeTokenHandler(result.token);
-                }
-            });
+    // ✅ Gestion des erreurs Stripe en temps réel
+    card.addEventListener("change", function (event) {
+        let displayError = document.getElementById("card-errors");
+        if (event.error) {
+            displayError.textContent = event.error.message;
         } else {
-            this.submit();
+            displayError.textContent = "";
         }
     });
 
-    // Fonction pour envoyer le token Stripe au backend
+    // ✅ Gestion de la soumission du formulaire
+    form.addEventListener("submit", function (event) {
+        if (modePaiement.value === "carte") {
+            event.preventDefault(); // Empêcher la soumission standard du formulaire
+            console.log("Paiement par carte détecté. Génération du token...");
+
+            stripe.createToken(card).then(function (result) {
+                if (result.error) {
+                    document.getElementById("card-errors").textContent = result.error.message;
+                    console.error("Erreur Stripe :", result.error.message);
+                } else {
+                    console.log("Token Stripe généré avec succès :", result.token);
+                    stripeTokenHandler(result.token);
+                }
+            });
+        }
+    });
+
+    // ✅ Fonction pour ajouter le token au formulaire et le soumettre
     function stripeTokenHandler(token) {
-        let form = document.querySelector('form');
-        let hiddenInput = document.createElement('input');
-        hiddenInput.setAttribute('type', 'hidden');
-        hiddenInput.setAttribute('name', 'stripeToken');
-        hiddenInput.setAttribute('value', token.id);
+        let hiddenInput = document.createElement("input");
+        hiddenInput.setAttribute("type", "hidden");
+        hiddenInput.setAttribute("name", "stripeToken");
+        hiddenInput.setAttribute("value", token.id);
         form.appendChild(hiddenInput);
-        form.submit();
+
+        console.log("Token ajouté au formulaire. Envoi du formulaire...");
+        form.submit(); // ✅ Soumission du formulaire après l'ajout du token
     }
 });
 

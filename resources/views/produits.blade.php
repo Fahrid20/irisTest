@@ -28,6 +28,24 @@
     <!-- Barre de recherche -->
     <div class="mb-4 text-center">
         <input type="text" id="searchInput" class="form-control w-50 mx-auto" placeholder="Rechercher un produit...">
+
+        
+        <div class="filter-container">
+                    <select id="priceFilter" class="filter">
+                        <option value="">Filtrer par prix</option>
+                        <option value="low">Moins de 50€</option>
+                        <option value="medium">50€ - 200€</option>
+                        <option value="high">Plus de 200€</option>
+                    </select>
+                    <select id="colorFilter" class="filter">
+                        <option value="">Filtrer par couleur</option>
+                        <option value="noir">Noir</option>
+                        <option value="blanc">Blanc</option>
+                        <option value="bleu">Bleu</option>
+                        <option value="rouge">Rouge</option>
+                    </select>
+                
+                </div>
     </div>
 
 <div class="container" style="display: flex; width: 100%; height: 100vh;">
@@ -186,6 +204,69 @@
 </script>
 
 
+
+
+<script>
+    //filtre
+document.addEventListener('DOMContentLoaded', function () {
+    AOS.init({ 
+        duration: 800, 
+        easing: 'ease-in-out', 
+        once: true 
+    });
+
+    let searchInput = document.getElementById('searchInput');
+    let priceFilter = document.getElementById('priceFilter');
+    let colorFilter = document.getElementById('colorFilter');
+    let productContainer = document.querySelector('.row');
+    let products = Array.from(document.querySelectorAll('.product-card'));
+
+    function filterProducts() {
+        let searchText = searchInput.value.toLowerCase();
+        let selectedPrice = priceFilter.value;
+        let selectedColor = colorFilter.value;
+
+        let visibleProducts = [];
+        let hiddenProducts = [];
+
+        products.forEach(product => {
+            let name = product.getAttribute('data-name'); 
+            let price = parseFloat(product.querySelector('.card-text strong').nextSibling.nodeValue.trim()); // Récupère le prix
+            let color = product.innerHTML.toLowerCase(); // Recherche la couleur dans le contenu HTML du produit
+
+            let matchesSearch = name.includes(searchText);
+            let matchesPrice = 
+                selectedPrice === "" ||
+                (selectedPrice === "low" && price < 50) ||
+                (selectedPrice === "medium" && price >= 50 && price <= 200) ||
+                (selectedPrice === "high" && price > 200);
+            let matchesColor = selectedColor === "" || color.includes(selectedColor);
+
+            if (matchesSearch && matchesPrice && matchesColor) {
+                product.style.display = "block";
+                visibleProducts.push(product);
+            } else {
+                product.style.display = "none";
+                hiddenProducts.push(product);
+            }
+        });
+
+        // Réorganiser les produits dans le DOM
+        productContainer.innerHTML = ''; // Vide le conteneur
+        visibleProducts.forEach(product => productContainer.appendChild(product)); // Ajoute d'abord les visibles
+        hiddenProducts.forEach(product => productContainer.appendChild(product)); // Puis les invisibles à la fin
+    }
+
+    // Écouteurs d'événements
+    searchInput.addEventListener('input', filterProducts);
+    priceFilter.addEventListener('change', filterProducts);
+    colorFilter.addEventListener('change', filterProducts);
+});
+</script>
+
+
+
+
 <style>
 .card {
     transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
@@ -246,5 +327,19 @@
 .list-style li{
     position: left;
     text-align: left;
+}
+
+/*filtre*/
+
+.filter-container {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 1rem 1rem;
+}
+.filter {
+    padding: 0.5rem;
+    border: 1px solid #007bff;
+    border-radius: 5px;
 }
 </style>

@@ -143,6 +143,59 @@
                         </div>
                     </form>
 
+                                                                            <!-- Bloc Commandes -->
+                                                        <div class="col-12 mb-4">
+                                                            <div class="card shadow-lg border-0 p-4 text-center">
+                                                                <h5 class="mb-3">Vos Commandes</h5>
+                                                                
+                                                                @if($commandes->isEmpty())
+                                                                    <p>Aucune commande passée.</p>
+                                                                @else
+                                                                    <div class="table-responsive">
+                                                                        <table class="table table-bordered">
+                                                                            <thead class="table-dark">
+                                                                                <tr>
+                                                                                    <th>ID</th>
+                                                                                    <th>Date</th>
+                                                                                    <th>Total</th>
+                                                                                    <th>Statut</th>
+                                                                                    <th>Détails</th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody>
+                                                                                @foreach($commandes as $commande)
+                                                                                    <tr>
+                                                                                        <td>{{ $commande->id }}</td>
+                                                                                        <td>{{ $commande->created_at->format('d/m/Y') }}</td>
+                                                                                        <td>{{ number_format($commande->total, 2) }} €</td>
+                                                                                        <td>{{ ucfirst($commande->statut) }}</td>
+                                                                                        <td>
+                                                                                            <button class="btn btn-sm btn-info" onclick="toggleDetails({{ $commande->id }})">Voir</button>
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                    <tr id="details-{{ $commande->id }}" class="d-none">
+                                                                                    <td colspan="5">
+                                                                                            <strong>Détails de la commande :</strong>
+                                                                                            <ul class="list-unstyled mt-2">
+                                                                                                @foreach($commande->details as $detail)
+                                                                                                    <li>
+                                                                                                        <strong>Produit :</strong> {{ $detail->produit->nom ?? 'Nom inconnu' }} <br>
+                                                                                                        <strong>Quantité :</strong> {{ $detail->quantite }} <br>
+                                                                                                        <strong>Prix unitaire :</strong> {{ number_format($detail->prix_unitaire, 2) }} €
+                                                                                                    </li>
+                                                                                                @endforeach
+                                                                                            </ul>
+                                                                                        </td>
+                                                                                    </tr>
+
+                                                                                @endforeach
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                @endif
+                                                            </div>
+                                                        </div>
+
                 </div>
             </div>
         </div>
@@ -319,4 +372,13 @@
         yearFilter.addEventListener('change', updatePurchases);
     });
 
+</script>
+
+
+<script> 
+
+function toggleDetails(id) {
+    let row = document.getElementById('details-' + id);
+    row.classList.toggle('d-none');
+}
 </script>

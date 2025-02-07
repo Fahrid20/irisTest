@@ -27,10 +27,7 @@ class UserInfoController extends Controller
 
     public function show()
     {
-        // Récupérer l'utilisateur connecté
         $user = auth()->user();
-
-        // Vérifier si un profil existe ou en créer un vide
         $userInfo = $user->userInfo ?: $user->userInfo()->create([
             'phone' => null,
             'address' => null,
@@ -39,10 +36,13 @@ class UserInfoController extends Controller
             'city' => null,
             'zip_code' => null,
         ]);
-
-        // Passer les données à la vue
-        return view('profile', compact('user', 'userInfo'));
+    
+        // Charger les commandes avec les détails et les produits associés
+        $commandes = $user->commandes()->with('details.produit')->orderBy('created_at', 'desc')->get();
+    
+        return view('profile', compact('user', 'userInfo', 'commandes'));
     }
+    
 
 
     // Mettre à jour les informations du profil utilisateur

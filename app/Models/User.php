@@ -56,4 +56,10 @@ class User extends Authenticatable
         // 'user_id' = clé étrangère dans `user_infos`
         // 'id' = clé primaire dans `users`
     }
+
+        public function commandes()
+    {
+        return $this->hasMany(Commande::class);
+    }
+
 }
