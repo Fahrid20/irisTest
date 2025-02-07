@@ -44,4 +44,16 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+
+        /**
+     * Relation avec le modèle UserInfo.
+     * Chaque utilisateur possède une entrée dans la table `user_infos`.
+     */
+    public function userInfo()
+    {
+        return $this->hasOne(UserInfo::class, 'user_id', 'id'); 
+        // 'user_id' = clé étrangère dans `user_infos`
+        // 'id' = clé primaire dans `users`
+    }
 }

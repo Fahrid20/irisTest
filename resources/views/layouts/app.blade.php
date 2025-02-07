@@ -220,7 +220,7 @@
                                     <li><a class="dropdown-item" href="{{ route('propos') }}">{{ __('A propos') }}</a></li>
                                     <li><a class="dropdown-item" href="{{ route('pricing') }}">{{ __('Promotions') }}</a></li>
                                     <li><a class="dropdown-item" href="{{ route('services') }}">{{ __('Services clients') }}</a></li>
-                                    <li><a class="dropdown-item" href="#">{{ __('Profil') }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('profile.show') }}">{{ __('Profile') }}</a></li>
                                     <li>
                                        
                                         <form  class="dropdown-item" id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;"> 

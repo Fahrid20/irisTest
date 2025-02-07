@@ -142,14 +142,7 @@
                             </select>
                         </div>
                     </form>
-                    <div id="purchaseList">
-                        @foreach($purchases as $purchase)
-                            <div class="purchase-item" data-month="{{ date('m', strtotime($purchase->date)) }}" data-year="{{ date('Y', strtotime($purchase->date)) }}">
-                                <p><strong>{{ $purchase->date }}</strong> - {{ $purchase->item }} : {{ number_format($purchase->amount, 2) }} €</p>
-                            </div>
-                        @endforeach
-                    </div>
-                    <p class="mt-3"><strong>Total des achats :</strong> <span id="totalAmount">0</span> €</p>
+
                 </div>
             </div>
         </div>

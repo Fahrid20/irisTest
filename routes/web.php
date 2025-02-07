@@ -10,6 +10,8 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CommandeController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PromotionController;
+use App\Http\Controllers\UserInfoController;
+use App\Http\Controllers\ReviewController; 
 
 
 
@@ -149,5 +151,12 @@ Route::put('/admin/commandes/{id}', [AdminController::class, 'updateCommande'])-
 
 // Route pour traiter le formulaire (POST)
 Route::post('/admin/produits', [AdminController::class, 'ajouterProduit'])->name('admin.ajouterProduit');
+
+/** route profil */ 
+Route::middleware(['auth'])->group(function () { 
+    Route::get('/profile', [UserInfoController::class, 'show'])->name('profile.show'); 
+    Route::post('/profile/update', [UserInfoController::class, 'updatePersonalInfo'])->name('profile.update'); 
+    Route::post('/profile/payment/add', [UserInfoController::class, 'addPaymentMethod'])->name('profile.payment.add'); 
+});
 
 
