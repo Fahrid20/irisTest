@@ -123,7 +123,7 @@
         <!-- Bloc Historique d'achat -->
         <div class="col-12 mb-4">
             <div class="card shadow-lg border-0 p-4 text-center">
-                <button id="toggleHistoryBtn" class="btn btn-primary w-50">Afficher l'historique des achats</button>
+                <button id="toggleHistoryBtn" class="btn btn-primary ">Afficher l'historique des achats</button>
                 <div id="purchaseHistory" class="mt-4 d-none">
                     <h5 class="mb-3">Historique des achats</h5>
                     <form id="filterForm" class="mb-3">
@@ -239,6 +239,14 @@
         border-radius: 15px;
         padding: 20px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    /* section historique */
+    #toggleHistoryBtn {
+        display: block; /* Permet à margin auto de fonctionner */
+        margin-right: 25%; /* Applique 25% de marge à droite */
+        margin-left: 25%; 
+        width: 50%;
     }
 
     /* Animation simple */
