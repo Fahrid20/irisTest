@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->string('code_postal');
             $table->enum('mode_paiement', ['carte', 'paypal', 'cash']);
             $table->decimal('total', 10, 2); // Total de la commande
-            $table->enum('statut', ['en attente', 'payée', 'expédiée', 'livrée', 'annulée'])->default('en attente');
+            $table->string('statut')->default('en attente');
             $table->timestamps();
         });
     }

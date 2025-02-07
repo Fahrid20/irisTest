@@ -62,18 +62,8 @@
                 <!-- Champs pour paiement par carte -->
                 <div id="paiement-carte" class="mt-3 d-none">
                     <h5>Informations de la Carte</h5>
-                    <div class="mb-3">
-                        <label>Numéro de carte</label>
-                        <input type="text" name="carte_numero" class="form-control" maxlength="16">
-                    </div>
-                    <div class="mb-3">
-                        <label>Date d'expiration</label>
-                        <input type="month" name="carte_expiration" class="form-control">
-                    </div>
-                    <div class="mb-3">
-                        <label>CVV</label>
-                        <input type="text" name="carte_cvv" class="form-control" maxlength="3">
-                    </div>
+                    <div id="card-element" class="form-control"></div>
+                    <div id="card-errors" class="text-danger mt-2"></div>
                 </div>
 
                 <!-- Champs pour paiement par PayPal -->
@@ -97,27 +87,69 @@
 </div>
 
 
-@endsection
+<script src="https://js.stripe.com/v3/"></script>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const modePaiement = document.getElementById("mode_paiement");
-        const paiementCarte = document.getElementById("paiement-carte");
-        const paiementPaypal = document.getElementById("paiement-paypal");
-        const paiementCash = document.getElementById("paiement-cash");
+   document.addEventListener("DOMContentLoaded", function () {
+    const modePaiement = document.getElementById("mode_paiement");
+    const paiementCarte = document.getElementById("paiement-carte");
+    const paiementPaypal = document.getElementById("paiement-paypal");
+    const paiementCash = document.getElementById("paiement-cash");
 
-        modePaiement.addEventListener("change", function () {
-            paiementCarte.classList.add("d-none");
-            paiementPaypal.classList.add("d-none");
-            paiementCash.classList.add("d-none");
+    // Initialisation de Stripe
+    let stripe = Stripe("pk_test_51NNh6tFwHGknk4nqck1n8EPRp4UrLDXj9OyLNXho5ajKuVQsaLUTIg3vXncZjztOv5XqarktPnTkPYXS9rHFTxeE005YxHumb2");
+    let elements = stripe.elements();
+    let card = elements.create('card');
+    card.mount('#card-element');
 
-            if (this.value === "carte") {
-                paiementCarte.classList.remove("d-none");
-            } else if (this.value === "paypal") {
-                paiementPaypal.classList.remove("d-none");
-            } else if (this.value === "cash") {
-                paiementCash.classList.remove("d-none");
-            }
-        });
+    // Gestion de l'affichage des modes de paiement
+    modePaiement.addEventListener("change", function () {
+        paiementCarte.classList.add("d-none");
+        paiementPaypal.classList.add("d-none");
+        paiementCash.classList.add("d-none");
+
+        if (this.value === "carte") {
+            paiementCarte.classList.remove("d-none");
+        } else if (this.value === "paypal") {
+            paiementPaypal.classList.remove("d-none");
+        } else if (this.value === "cash") {
+            paiementCash.classList.remove("d-none");
+        }
     });
+
+    // Gestion des erreurs Stripe
+    card.addEventListener('change', function(event) {
+        let displayError = document.getElementById('card-errors');
+        displayError.textContent = event.error ? event.error.message : '';
+    });
+
+    // Gestion de la soumission du formulaire
+    document.querySelector('form').addEventListener('submit', function(event) {
+        event.preventDefault();
+        if (modePaiement.value === "carte") {
+            stripe.createToken(card).then(function(result) {
+                if (result.error) {
+                    document.getElementById('card-errors').textContent = result.error.message;
+                } else {
+                    stripeTokenHandler(result.token);
+                }
+            });
+        } else {
+            this.submit();
+        }
+    });
+
+    // Fonction pour envoyer le token Stripe au backend
+    function stripeTokenHandler(token) {
+        let form = document.querySelector('form');
+        let hiddenInput = document.createElement('input');
+        hiddenInput.setAttribute('type', 'hidden');
+        hiddenInput.setAttribute('name', 'stripeToken');
+        hiddenInput.setAttribute('value', token.id);
+        form.appendChild(hiddenInput);
+        form.submit();
+    }
+});
+
 </script>
+@endsection

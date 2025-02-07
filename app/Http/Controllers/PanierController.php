@@ -72,7 +72,7 @@ class PanierController extends Controller
     /**
      * Fonction pour compter le nombre total d'articles dans le panier de l'utilisateur connecté.
      */
-    public static function compterArticlesPanier()
+    public function compterArticlesPanier()
     {
         if (Auth::check()) {
             return Panier::where('user_id', Auth::id())->sum('quantite');

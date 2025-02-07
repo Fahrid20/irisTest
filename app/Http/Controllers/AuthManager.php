@@ -53,24 +53,13 @@ class AuthManager extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-
         if (!$user) {
             return redirect(route('register'))->withErrors(['error' => 'Registration failed, please try again.']);
         }
 
-        // Création du profil associé
-        $user->userInfo()->create([
-            'phone' => null,
-            'address' => null,
-            'birthdate' => null,
-            'country' => null,
-            'city' => null,
-            'zip_code' => null,
-        ]);
-
+        
         return redirect(route('login'))->with('success', 'Registration successful!');
     }
-    
 
    /* public function logout()
     {

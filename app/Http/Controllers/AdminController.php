@@ -6,24 +6,44 @@ use App\Models\Caracteristique;
 use App\Models\Produit; // Import du modèle Produit
 use App\Models\User;
 use App\Models\Commande;
+use App\Models\Promotion;
 
 use Illuminate\Http\Request;
+
+use Illuminate\Support\Facades\Mail;
+
+use App\Mail\CommandeStatut;
+
+use Illuminate\Support\Facades\Validator;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
+use Illuminate\Support\Facades\Log;
+
 use App\Mail\SendEmailToClient;
+
+use Illuminate\Support\Facades\Storage;
+
 
 class AdminController extends Controller
 {
+        public function __construct()
+    {
+        $this->middleware('auth'); // Assure que l'utilisateur est connecté
+   
+    }
+
+  
 
     public function dashboard() {
+        $promotions = Promotion::all();
         $clients = User::where('role', 'client')->get();
         $produits = Produit::all();
         $commandes = Commande::with('user')->get();
         $admins = User::where('role', 'admin')->get();
 
-        return view('dashboard', compact('clients', 'produits', 'commandes', 'admins'));
+        return view('dashboard', compact('clients', 'produits', 'commandes', 'admins', 'promotions'));
     }
 
     public function updateProduit(Request $request, $id)
@@ -54,7 +74,7 @@ class AdminController extends Controller
     
 
     
-
+        //senmail
 
     public function sendEmail(Request $request)
     {
@@ -117,6 +137,134 @@ class AdminController extends Controller
             'admin' => $admin
         ]);
     }
+
+    //changer statut commande
+
+    public function updateCommande(Request $request, $id)
+    {
+        try {
+            \Log::info("📩 Requête reçue", ['id' => $id, 'données' => $request->all()]);
+    
+            $commande = Commande::findOrFail($id);
+    
+            $request->validate([
+                'statut' => 'required|string|in:en attente,en cours de traitement,envoyée'
+            ]);
+    
+            $commande->statut = $request->statut;
+            $commande->save();
+    
+            \Log::info("✅ Statut mis à jour", ['nouveau statut' => $commande->statut]);
+    
+            // 🔔 Envoi d'un email au client
+            Mail::to($commande->user->email)->send(new CommandeStatut($commande));
+    
+            return response()->json(['message' => 'Statut mis à jour avec succès et email envoyé.']);
+        } catch (\Exception $e) {
+            \Log::error("❌ Erreur updateCommande", ['message' => $e->getMessage()]);
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+    
+    
+    
+    //add product
+
+    
+ 
+    
+public function ajouterProduit(Request $request)
+{
+    // Valider les données
+    $validator = Validator::make($request->all(), [
+        'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        'data' => 'required|string',
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json(['error' => $validator->errors()], 422);
+    }
+
+    // Sauvegarde de l’image
+    if ($request->hasFile('image') && $request->file('image')->isValid()) {
+        try {
+            // Stockage de l'image dans le répertoire 'public' du storage
+            $imagePath = $request->file('image')->store('produits', 'public');
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Erreur lors du téléchargement de l\'image : ' . $e->getMessage()], 500);
+        }
+    } else {
+        return response()->json(['error' => 'Image invalide ou absente'], 400);
+    }
+
+    // Décoder les autres données envoyées sous forme de JSON
+    $productData = json_decode($request->input('data'), true);
+
+    if (is_null($productData)) {
+        return response()->json(['error' => 'Les données du produit sont incorrectes ou absentes'], 400);
+    }
+
+    // Création du produit
+    try {
+        $produit = Produit::create([
+            'nom' => $productData['nom'],
+            'image' => $imagePath,  // Sauvegarder seulement le chemin relatif
+            'stock' => $productData['stock'],
+            'prix' => $productData['prix'],
+            'categorie' => $productData['categorie_id'],
+           
+        ]);
+
+        // Ajout des caractéristiques
+        foreach ($productData['caracteristics'] as $caracteristic) {
+            $newCaracteristic = Caracteristique::create([
+                'description' => $caracteristic['description'],
+                'marque' => $caracteristic['marque'],
+                'couleur' => $caracteristic['couleur'],
+                'waterproof' => $caracteristic['waterproof'],
+            ]);
+
+            // Association produit <-> caractéristique
+            $produit->caracteristiques()->attach($newCaracteristic->id);
+        }
+
+        return response()->json(['success' => 'Produit ajouté avec succès'], 200);
+    } catch (\Exception $e) {
+        return response()->json(['error' => 'Erreur lors de la création du produit : ' . $e->getMessage()], 500);
+    }
+}
+
+
+
+public function storePromotion(Request $request)
+{
+    $request->validate([
+        'titre' => 'required|string|max:255',
+        'description' => 'required|string',
+        'image' => 'nullable|image|max:1024',
+        'prix_original' => 'nullable|numeric',
+        'prix_promo' => 'required|numeric',
+        'type' => 'required|string|in:remise,nouveau,offre speciale',
+    ]);
+
+    $promotion = new Promotion();
+    $promotion->titre = $request->titre;
+    $promotion->description = $request->description;
+    $promotion->prix_original = $request->prix_original;
+    $promotion->prix_promo = $request->prix_promo;
+    $promotion->type = $request->type;
+
+    if ($request->hasFile('image')) {
+        $path = $request->file('image')->store('promotions', 'public');
+        $promotion->image = $path;
+    }
+
+    $promotion->save();
+
+    return response()->json(['success' => 'Promotion ajoutée avec succès', 'promotion' => $promotion]);
+}
+
+
     
 
 

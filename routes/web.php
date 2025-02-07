@@ -9,8 +9,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CommandeController;
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\UserInfoController;
-use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\PromotionController;
 
 
 
@@ -24,7 +23,6 @@ use App\Http\Controllers\ReviewController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
 //////////////is admin
 Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::get('dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
@@ -51,9 +49,17 @@ Route::get('/features', function () {
     return view('features');
 })->name('home');
 
-Route::get('/pricing', function () {
+/*Route::get('/pricing', function () {
     return view('pricing');
-})->name('pricing');
+})->name('pricing');*/
+
+//promotions
+Route::get('/pricing', [App\Http\Controllers\PromotionController::class, 'pricing'])->name('pricing');
+
+Route::post('/admin/promotions', [AdminController::class, 'storePromotion'])->name('admin.storePromotion');
+
+
+
 
 Route::get('/propos', function () {
     return view('propos');
@@ -93,22 +99,10 @@ Route::middleware(['auth'])->group(function () {
 
 });
 
-/** route profil */ 
-Route::middleware(['auth'])->group(function () { 
-    Route::get('/profile', [UserInfoController::class, 'show'])->name('profile.show'); 
-    Route::post('/profile/update', [UserInfoController::class, 'updatePersonalInfo'])->name('profile.update'); 
-    Route::post('/profile/payment/add', [UserInfoController::class, 'addPaymentMethod'])->name('profile.payment.add'); 
-});
-
 /** produit */
 Route::get('/produits', [App\Http\Controllers\ArticleController::class, 'produits'])->name('produits');
 
 Route::get('/produits', [App\Http\Controllers\ArticleController::class, 'categorieProduit'])->name('produits');
-
-/** Avis clients */
-Route::get('/review', [ReviewController::class, 'create'])->name('review');
-Route::post('/review', [ReviewController::class, 'store'])->name('review');
-
 
 
 /** home */
@@ -119,6 +113,9 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'home'])->name(
 Route::get('/commande', [CommandeController::class, 'afficherCommande'])->name('commande.afficher');
 Route::post('/commande', [CommandeController::class, 'passerCommande'])->name('commande.passer');
 Route::get('/commande/success/{id}', [CommandeController::class, 'commandeSuccess'])->name('commande.success');
+
+Route::get('/commande/details/{id}', [CommandeController::class, 'detailsCommande']);
+
 
 //////////////////// ADMIN ////////////
 
@@ -144,3 +141,13 @@ Route::delete('/admin/produits/{id}', [AdminController::class, 'deleteProduit'])
 
 //add adim
 Route::post('/admin/users', [AdminController::class, 'addAdmin'])->name('admin.addAdmin');
+
+//changer statut d'une commande 
+Route::put('/admin/commandes/{id}', [AdminController::class, 'updateCommande'])->name('admin.updateCommande');
+
+//add product route
+
+// Route pour traiter le formulaire (POST)
+Route::post('/admin/produits', [AdminController::class, 'ajouterProduit'])->name('admin.ajouterProduit');
+
+

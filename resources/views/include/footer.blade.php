@@ -1,130 +1,101 @@
-
 <footer>
+    <div class="footer-container">
+        <div class="footer-section about">
+            <h3>About</h3>
+            <p>These partnerships strengthen Vivatrix's position as a premier destination for online shopping.</p>
+        </div>
 
-    <table>
+        <div class="footer-section partnership">
+            <h3>Partnership</h3>
+            <p>Offer a diverse selection of high-quality products, ranging from sports gear to trendy clothing and unique sheepskin accessories.</p>
+        </div>
 
-            <thead>
-                <tr>
-                    <th>About</th>
-                    <th>Partenership</th>
-                    <th>Contact us</th>
-                    <th id="contacts">Social Medias</th>
-                </tr>
-            </thead>
+        <div class="footer-section contact">
+            <h3>Contact Us</h3>
+            <p><i class='bx bxs-phone-call'></i> Phone</p>
+            <p><i class='bx bxs-envelope'></i> <a href="mailto:Email@gmail.com" class="mail">Email@gmail.com</a></p>
+        </div>
 
-            <tbody>
-                <tr>
-                    <td rowspan="4"><p>. These partnerships strengthen Vivatrix's position as a premier destination for online shopping.</p></td>
-                    <td rowspan="4"><p> Offer a diverse selection of high-quality products, ranging from sports gear to trendy clothing and unique sheepskin accessories. These partnerships strengthen Vivatrix's position as a premier destination for online shopping.</p></td>
-                    <td ><i class='bx bxs-phone-call' > Phone</i></td>
-                    <td><a href="" class="link_1"><i class='bx bxl-twitter' ></i>Twitter</a></td>
-                </tr>
-                <tr>
-  
-                    <td><i class='bx bxs-envelope'> <a class="mail" href="mailto:Email@gmail.com">Email@gmail.com</a></td>
-                    <td><a href="" class="link_2"><i class='bx bxl-facebook-circle'></i>Facebook</a></td>
-                </tr>
-                <tr>
-
-                    <td><i class='bx bxs-envelope'> <a class="mail" href="mailto:Email@gmail.com">Email@gmail.com</a></td>
-                    <td><a href="" class="link_3"><i class='bx bxl-tiktok'></i> Tiktok</a></td>
-                </tr>
-                <tr>
-
-                    <td><i class='bx bxs-envelope'> <a class="mail" href="mailto:Email@gmail.com">Email@gmail.com</a></td>
-                    <td><a href="" class="link_4"><i class='bx bxl-instagram-alt'></i>Instagram</a></td>
-                </tr>
-            </tbody>
-
-    </table>
-
-   
+        <div class="footer-section social">
+            <h3>Social Medias</h3>
+            <a href="#" class="social-link"><i class='bx bxl-twitter'></i> Twitter</a>
+            <a href="#" class="social-link"><i class='bx bxl-facebook-circle'></i> Facebook</a>
+            <a href="#" class="social-link"><i class='bx bxl-tiktok'></i> TikTok</a>
+            <a href="#" class="social-link"><i class='bx bxl-instagram-alt'></i> Instagram</a>
+        </div>
+    </div>
 </footer>
 
-
 <style>
-
-    /* Style du Footer */
+/* 🔹 Style du Footer */
 footer {
-    background-color: #1e293b; /* Fond sombre pour le footer */
-    color: #94a3b8; /* Couleur du texte (gris clair) */
-   /* padding: 40px 20px;*/
-    text-align: center;
-    font-family: 'Roboto', sans-serif;
-    margin-top: auto;
-}
-
-footer table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 0 auto;
-    text-align: left;
-}
-
-footer th {
-    color: #38bdf8; /* Couleur du texte des en-têtes */
-    font-weight: bold;
-    padding: 10px;
-    text-transform: uppercase;
-    font-size: 1rem;
-}
-
-footer td {
-    padding: 15px;
-    vertical-align: top;
-}
-
-footer td p {
-    font-size: 0.9rem;
+    background-color: #1e293b;
     color: #94a3b8;
-    line-height: 1.6;
-    margin: 0;
+    text-align: center;
+    padding: 40px 20px;
+    font-family: 'Roboto', sans-serif;
 }
 
-footer td a {
+/* 🔹 Conteneur du footer */
+.footer-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsive Grid */
+    gap: 20px;
+    max-width: 1200px;
+    margin: auto;
+}
+
+/* 🔹 Sections du footer */
+.footer-section {
+    text-align: left;
+    padding: 15px;
+}
+
+.footer-section h3 {
+    color: #38bdf8;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.footer-section p,
+.footer-section a {
+    font-size: 1rem;
+    line-height: 1.6;
     color: #94a3b8;
     text-decoration: none;
-    font-size: 1rem;
-    transition: color 0.3s ease-in-out;
+    display: block;
+    transition: color 0.3s;
 }
 
-footer td a:hover {
-    color: #38bdf8; /* Couleur au survol des liens */
-}
-
-footer td i {
-    margin-right: 8px;
-    font-size: 1.2rem;
-    color: #38bdf8; /* Couleur des icônes */
-}
-
-footer .link_1:hover, footer .link_2:hover, footer .link_3:hover, footer .link_4:hover {
+.footer-section a:hover {
     color: #38bdf8;
 }
 
-/* Responsivité */
-@media (max-width: 768px) {
-    footer table {
-        width: 100%;
-        margin: 20px 0;
-    }
-
-    footer th, footer td {
-        font-size: 0.9rem;
-        padding: 8px;
-    }
-
-    footer td p {
-        font-size: 0.8rem;
-    }
-
-    footer td a {
-        font-size: 0.9rem;
-    }
-
-    footer i {
-        font-size: 1rem;
-    }
+/* 🔹 Icônes */
+.footer-section i {
+    margin-right: 8px;
+    font-size: 1.3rem;
+    color: #38bdf8;
 }
 
+/* 🔹 Responsivité */
+@media (max-width: 768px) {
+    .footer-container {
+        grid-template-columns: 1fr; /* Une seule colonne sur petits écrans */
+        text-align: center;
+    }
+
+    .footer-section {
+        padding: 10px;
+    }
+
+    .footer-section h3 {
+        font-size: 1.1rem;
+    }
+
+    .footer-section p,
+    .footer-section a {
+        font-size: 0.9rem;
+    }
+}
 </style>

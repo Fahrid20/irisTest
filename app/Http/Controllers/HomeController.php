@@ -1,8 +1,11 @@
 <?php
 
+
+
 namespace App\Http\Controllers;
 
 use App\Models\Produit; // Import du modèle Produit
+use App\Models\CommandeDetail; // Import du modèle CommandeDetail
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -29,6 +32,18 @@ class HomeController extends Controller
         $pcs = Produit::where('categorie', 2)->take(6)->get();
         $accessoires = Produit::where('categorie', 3)->take(6)->get();
 
-        return view('home', compact('telephones', 'pcs', 'accessoires'));
+        // Récupérer les 3 produits les plus vendus
+        $topVentes = CommandeDetail::select('produit_id')
+            ->selectRaw('SUM(quantite) as total_vendu')
+            ->groupBy('produit_id')
+            ->orderByDesc('total_vendu')
+            ->take(3)
+            ->with('produit') // Charger les infos des produits
+            ->get()
+            ->map(function ($detail) {
+                return $detail->produit;
+            });
+
+        return view('home', compact('telephones', 'pcs', 'accessoires', 'topVentes'));
     }
 }

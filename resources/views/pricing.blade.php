@@ -9,50 +9,50 @@
     </div>
 </header>
 
+@if(isset($promotions) && count($promotions) > 0)
+    <p>Il y a {{ count($promotions) }} promotions disponibles.</p>
+@else
+    <p>Aucune promotion disponible.</p>
+@endif
+
+
 <div class="container">
     <div class="section">
-        <div class="card">
-            <div class="badge">-30%</div>
-            <div class="image-wrapper">
-                <img src="{{ asset('storage/prom.jpg') }}"  alt="Promo 1">
-            </div>
-            <div class="card-content">
-                <h3>Offre spéciale 1</h3>
-                <p>Profitez de 30% de réduction sur ce produit exceptionnel !</p>
-                <div class="price"> <span class="old-price">$100</span> $70 </div>
-                <a href="#" class="btn">Voir l'offre</a>
-            </div>
-        </div>
+        @foreach($promotions as $promotion)
+            <div class="card">
+                @if($promotion->type == 'remise')
+                    <div class="badge">-{{ round((($promotion->prix_original - $promotion->prix_promo) / $promotion->prix_original) * 100) }}%</div>
+                @elseif($promotion->type == 'nouveau')
+                    <div class="badge new">Nouveau</div>
+                @else
+                    <div class="badge">Offre spéciale</div>
+                @endif
 
-        <div class="card">
-            <div class="badge new">Nouveau</div>
-            <div class="image-wrapper">
-                <img src="{{ asset('storage/prom.jpg') }}"  alt="Promo 2">
-            </div>
-            <div class="card-content">
-                <h3>Nouveauté 2</h3>
-                <p>Découvrez notre tout dernier produit tendance.</p>
-                <div class="price">$120</div>
-                <a href="#" class="btn">Découvrir</a>
-            </div>
-        </div>
+                <div class="image-wrapper">
+                    <img src="{{ asset('storage/' . $promotion->image) }}" alt="{{ $promotion->titre }}">
+                </div>
 
-        <div class="card">
-            <div class="badge">1+1 Gratuit</div>
-            <div class="image-wrapper">
-                <img src="{{ asset('storage/prom.jpg') }}" alt="Promo 3">
+                <div class="card-content">
+                    <h3>{{ $promotion->titre }}</h3>
+                    <p>{{ $promotion->description }}</p>
+                    
+                    <div class="price">
+                        @if($promotion->prix_original)
+                            <span class="old-price">${{ $promotion->prix_original }}</span>
+                        @endif
+                        ${{ $promotion->prix_promo }}
+                    </div>
+
+                    <a href="#" class="btn">Voir l'offre</a>
+                </div>
             </div>
-            <div class="card-content">
-                <h3>Promotion spéciale 3</h3>
-                <p>Achetez-en 1, obtenez-en 1 gratuit sur cette offre limitée.</p>
-                <div class="price">$50</div>
-                <a href="#" class="btn">En profiter</a>
-            </div>
-        </div>
+        @endforeach
     </div>
 </div>
 
 @endsection
+
+
 
 <script>
     document.addEventListener("DOMContentLoaded", () => {

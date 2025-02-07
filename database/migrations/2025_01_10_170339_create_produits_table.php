@@ -19,11 +19,11 @@ class CreateProduitsTable extends Migration
             $table->int('stock'); // stock du produit
             $table->decimal('prix', 8, 2); // Prix du produit
             $table->string('image'); // Chemin de l'image du produit
-            $table->unsignedBigInteger('categorie_id'); // Clé étrangère pour la catégorie
+            $table->unsignedBigInteger('categorie'); // Clé étrangère pour la catégorie
             $table->timestamps();
     
             // Clé étrangère
-            $table->foreign('categorie_id')->references('id')->on('categories')->onDelete('cascade');
+            $table->foreign('categorie')->references('id')->on('categories')->onDelete('cascade');
         });
     }
 
