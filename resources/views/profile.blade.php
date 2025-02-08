@@ -160,6 +160,7 @@
                                                                                     <th>Total</th>
                                                                                     <th>Statut</th>
                                                                                     <th>Détails</th>
+                                                                                    <th>AVIS</th>
                                                                                 </tr>
                                                                             </thead>
                                                                             <tbody>
@@ -172,6 +173,9 @@
                                                                                         <td>
                                                                                             <button class="btn btn-sm btn-info" onclick="toggleDetails({{ $commande->id }})">Voir</button>
                                                                                         </td>
+                                                                                        <td>
+                                                                                            <button class="btn btn-sm btn-warning" >NOTER</button>
+                                                                                        </td>
                                                                                     </tr>
                                                                                     <tr id="details-{{ $commande->id }}" class="d-none">
                                                                                     <td colspan="5">
@@ -180,6 +184,7 @@
                                                                                                 @foreach($commande->details as $detail)
                                                                                                     <li>
                                                                                                         <strong>Produit :</strong> {{ $detail->produit->nom ?? 'Nom inconnu' }} <br>
+                                                                                                        <strong>Produit :</strong> {{ $detail->produit->caracteristique->couleur ?? 'Nom inconnu' }} <br>
                                                                                                         <strong>Quantité :</strong> {{ $detail->quantite }} <br>
                                                                                                         <strong>Prix unitaire :</strong> {{ number_format($detail->prix_unitaire, 2) }} €
                                                                                                     </li>

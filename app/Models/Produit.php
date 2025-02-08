@@ -22,6 +22,13 @@ class Produit extends Model
     {
         return $this->belongsToMany(Caracteristique::class, 'produit_caracteristique');
     }
+
+
+        public function caracteristique()
+    {
+        return $this->hasOne(Caracteristique::class, 'id');
+    }
+
 }
 
 

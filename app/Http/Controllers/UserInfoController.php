@@ -38,7 +38,9 @@ class UserInfoController extends Controller
         ]);
     
         // Charger les commandes avec les détails et les produits associés
-        $commandes = $user->commandes()->with('details.produit')->orderBy('created_at', 'desc')->get();
+        
+        $commandes = $user->commandes()->with('details.produit.caracteristique')->orderBy('created_at', 'desc')->get();
+
     
         return view('profile', compact('user', 'userInfo', 'commandes'));
     }
