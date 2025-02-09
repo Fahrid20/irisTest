@@ -663,46 +663,76 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 
 
+
+
+
 <script>
+
 document.addEventListener("DOMContentLoaded", function () {
     const detailsModal = document.getElementById("commande-details");
     const detailsContent = document.getElementById("commande-content");
     const closeDetails = document.querySelector(".close-details");
 
-    // ✅ Événement pour afficher les détails de la commande
     document.querySelectorAll(".btn-details").forEach(button => {
         button.addEventListener("click", function () {
-            detailsModal.classList.add("d-block"); // ✅ Masquer correctement
+            detailsModal.classList.add("d-block");
             const commandeId = this.getAttribute("data-id");
 
-            // 🔹 Requête AJAX pour récupérer les détails
             fetch(`/commande/details/${commandeId}`)
                 .then(response => response.json())
                 .then(data => {
-                    // Vérifie si la réponse est correcte
                     if (!data || !data.details) {
                         detailsContent.innerHTML = "<p class='text-danger'>Erreur : Détails non disponibles.</p>";
                         return;
                     }
 
-                    // 🔹 Générer le contenu des détails
-                    let html = `<p><strong>Nom :</strong> ${data.nom}</p>`;
-                    html += `<p><strong>Email :</strong> ${data.email}</p>`;
-                    html += `<p><strong>Adresse :</strong> ${data.adresse}, ${data.ville}, ${data.code_postal}</p>`;
-                    html += `<p><strong>Mode de paiement :</strong> ${data.mode_paiement}</p>`;
-                    html += `<h5>Produits commandés :</h5>`;
-                    html += `<ul class="list-group">`;
-                    data.details.forEach(detail => {
-                        html += `<li class="list-group-item d-flex justify-content-between">
-                                    <span>${detail.produit.nom} x${detail.quantite}</span>
-                                    <strong>${detail.prix_unitaire * detail.quantite} €</strong>
-                                 </li>`;
-                    });
-                    html += `</ul>`;
+                    let html = `
+                        <div class="p-3">
+                            <h4 class="text-primary">Détails de la commande</h4>
+                            <hr>
+                            <p><strong>Nom :</strong> ${data.nom}</p>
+                            <p><strong>Email :</strong> ${data.email}</p>
+                            <p><strong>Adresse :</strong> ${data.adresse}, ${data.ville}, ${data.code_postal}</p>
+                            <p><strong>Mode de paiement :</strong> ${data.mode_paiement}</p>
+                            <hr>
+                            <h5 class="mt-3">🛒 Produits commandés :</h5>
+                            <table class="table table-striped mt-2">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Produit</th>
+                                        <th>Couleur</th>
+                                        <th>Quantité</th>
+                                        <th>Prix Unitaire</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>`;
 
-                    // 🔹 Ajouter le contenu et afficher le bloc
+                    let totalCommande = 0;
+                    data.details.forEach(detail => {
+                        // Utiliser l'opérateur de "safe navigation" pour éviter l'accès à une propriété undefined
+                        const couleur = detail.produit.caracteristique?.couleur || 'Non spécifié'; // Valeur par défaut si undefined ou null
+                        let totalLigne = detail.prix_unitaire * detail.quantite;
+                        totalCommande += totalLigne;
+
+                        html += `
+                            <tr>
+                                <td>${detail.produit.nom}</td>
+                                <td>${couleur}</td>
+                                <td>${detail.quantite}</td>
+                                <td>${detail.prix_unitaire} €</td>
+                                <td><strong>${totalLigne} €</strong></td>
+                            </tr>`;
+                    });
+
+                    html += `</tbody></table>
+                            <div class="text-end mt-3">
+                                <h5 class="text-success">Total : <strong>${totalCommande} €</strong></h5>
+                            </div>
+                        </div>`;
+
                     detailsContent.innerHTML = html;
-                    detailsModal.classList.remove("d-none"); // ✅ Afficher correctement
+                    detailsModal.classList.remove("d-none");
                 })
                 .catch(error => {
                     console.error("Erreur lors de la récupération des détails :", error);
@@ -711,13 +741,14 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // ✅ Événement pour fermer les détails
     closeDetails.addEventListener("click", function () {
-        detailsModal.classList.add("d-none"); // ✅ Masquer correctement
+        detailsModal.classList.add("d-none");
     });
 });
 
+
 </script>
+
 
 
 

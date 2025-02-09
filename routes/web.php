@@ -147,6 +147,8 @@ Route::post('/admin/users', [AdminController::class, 'addAdmin'])->name('admin.a
 //changer statut d'une commande 
 Route::put('/admin/commandes/{id}', [AdminController::class, 'updateCommande'])->name('admin.updateCommande');
 
+Route::get('/commande/details/{id}', [AdminController::class, 'getCommandeDetails']);
+
 //add product route
 
 // Route pour traiter le formulaire (POST)

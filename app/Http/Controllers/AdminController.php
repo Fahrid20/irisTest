@@ -7,12 +7,14 @@ use App\Models\Produit; // Import du modèle Produit
 use App\Models\User;
 use App\Models\Commande;
 use App\Models\Promotion;
+use App\Models\CommandeDetail;
 
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Mail;
 
 use App\Mail\CommandeStatut;
+
 
 use Illuminate\Support\Facades\Validator;
 
@@ -39,6 +41,7 @@ class AdminController extends Controller
     public function dashboard() {
         $promotions = Promotion::all();
         $clients = User::where('role', 'client')->get();
+        $produits = Produit::all();
         $produits = Produit::all();
         $commandes = Commande::with('user')->get();
         $admins = User::where('role', 'admin')->get();
@@ -265,7 +268,55 @@ public function storePromotion(Request $request)
 }
 
 
+//details commande
+//details commande
+public function getCommandeDetails($id)
+{
+    Log::info("🔍 Récupération des détails pour la commande ID : " . $id);
     
+    // Charger les données avec les relations nécessaires
+    $commande = Commande::with(['user', 'details.produit', 'details.produit.caracteristique'])->findOrFail($id);
+
+
+    // Log pour vérifier les données, notamment la couleur
+    foreach ($commande->details as $detail) {
+        $produit = $detail->produit;
+        $caracteristique = $produit->caracteristique;
+        $couleur = $caracteristique ? $caracteristique->couleur : 'Non spécifié';
+        
+        Log::info("Produit : " . $produit->nom . " - Couleur : " . $couleur);
+    }
+
+    // Retourner les détails en format JSON
+    return response()->json([
+        'nom' => $commande->user->name ?? 'Inconnu',
+        'email' => $commande->user->email ?? 'Inconnu',
+        'adresse' => $commande->user->adresse ?? 'Inconnue',
+        'ville' => $commande->user->ville ?? 'Inconnue',
+        'code_postal' => $commande->user->code_postal ?? 'Inconnu',
+        'mode_paiement' => $commande->mode_paiement ?? 'Non spécifié',
+        'details' => $commande->details->map(function ($detail) {
+            $produit = $detail->produit;
+            $caracteristique = $produit->caracteristique;
+            $couleur = $caracteristique ? $caracteristique->couleur : 'Non spécifié';
+            
+            return [
+                'produit' => [
+                    'nom' => $produit->nom ?? 'Produit inconnu',
+                    'caracteristique' => [
+                        'couleur' => $couleur
+                    ]
+                ],
+                'quantite' => $detail->quantite,
+                'prix_unitaire' => $detail->prix_unitaire,
+            ];
+        }),
+    ]);
+}
+
+
+
+
 
 
 

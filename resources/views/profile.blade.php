@@ -184,7 +184,7 @@
                                                                                                 @foreach($commande->details as $detail)
                                                                                                     <li>
                                                                                                         <strong>Produit :</strong> {{ $detail->produit->nom ?? 'Nom inconnu' }} <br>
-                                                                                                        <strong>Produit :</strong> {{ $detail->produit->caracteristique->couleur ?? 'Nom inconnu' }} <br>
+                                                                                                        <strong>Couleur :</strong> {{ $detail->produit->caracteristique->couleur ?? 'Nom inconnu' }} <br>
                                                                                                         <strong>Quantité :</strong> {{ $detail->quantite }} <br>
                                                                                                         <strong>Prix unitaire :</strong> {{ number_format($detail->prix_unitaire, 2) }} €
                                                                                                     </li>
