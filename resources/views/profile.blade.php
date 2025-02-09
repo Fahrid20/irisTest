@@ -174,8 +174,12 @@
                                                                                             <button class="btn btn-sm btn-info" onclick="toggleDetails({{ $commande->id }})">Voir</button>
                                                                                         </td>
                                                                                         <td>
-                                                                                            <button class="btn btn-sm btn-warning" >NOTER</button>
+                                                                                            <a href="{{ route('review.create', ['commande_id' => $commande->id]) }}" class="btn btn-sm btn-warning">
+                                                                                                NOTER
+                                                                                            </a>
                                                                                         </td>
+
+
                                                                                     </tr>
                                                                                     <tr id="details-{{ $commande->id }}" class="d-none">
                                                                                     <td colspan="5">

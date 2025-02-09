@@ -4,7 +4,7 @@
 <div class="container">
     <h1 class="text-center mb-4">Donnez votre avis sur</h1>
 
-    <form action="{{ route('review') }}" method="POST">
+    <form action="{{ route('review.store', ['commande_id' => $commande->id]) }}" method="POST">
         @csrf
 
         <!-- Système de notation -->

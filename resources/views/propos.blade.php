@@ -39,38 +39,27 @@
     </section>
 
     <section class="reviews-section">
-    <h2>Ce que disent nos clients</h2>
-    <div class="reviews-container">
-        <button class="review-prev">◀</button>
-        <div class="reviews-carousel">
-            <div class="review-card">
-                <img src="/images/avatar1.jpg" alt="Julie M." class="review-avatar">
-                <div class="review-stars">⭐️⭐️⭐️⭐️⭐️</div>
-                <p>"TechStore a révolutionné ma façon d'acheter de la tech en ligne. Des produits de qualité et un service client impeccable !"</p>
-                <span class="review-name">- Julie M.</span>
+        <h2>Ce que disent nos clients</h2>
+        <div class="reviews-container">
+            <button class="review-prev">◀</button>
+            <div class="reviews-carousel">
+                @foreach($reviews as $review)
+                    <div class="review-card">
+                        <img src="{{ $review->user->avatar ?? '/images/default-avatar.jpg' }}" alt="{{ $review->user->name }}" class="review-avatar">
+                        <div class="review-stars">
+                            @for ($i = 1; $i <= 5; $i++)
+                                {!! $i <= $review->rating ? '⭐️' : '⚪' !!}
+                            @endfor
+                        </div>
+                        <p>"{{ $review->comment }}"</p>
+                        <span class="review-name">- {{ $review->user->name }}</span>
+                    </div>
+                @endforeach
             </div>
-            <div class="review-card">
-                <img src="/images/avatar2.jpg" alt="Karim D." class="review-avatar">
-                <div class="review-stars">⭐️⭐️⭐️⭐️⭐️</div>
-                <p>"Une livraison ultra-rapide et des promotions incroyables ! Je recommande sans hésitation."</p>
-                <span class="review-name">- Karim D.</span>
-            </div>
-            <div class="review-card">
-                <img src="/images/avatar3.jpg" alt="Sophie L." class="review-avatar">
-                <div class="review-stars">⭐️⭐️⭐️⭐️⭐️</div>
-                <p>"Service client au top, toujours disponible pour aider. J'adore !"</p>
-                <span class="review-name">- Sophie L.</span>
-            </div>
-            <div class="review-card">
-                <img src="/images/avatar4.jpg" alt="Marc T." class="review-avatar">
-                <div class="review-stars">⭐️⭐️⭐️⭐️⭐️</div>
-                <p>"Des prix imbattables et un choix immense. Mon site préféré pour la tech !"</p>
-                <span class="review-name">- Marc T.</span>
-            </div>
+            <button class="review-next">▶</button>
         </div>
-        <button class="review-next">▶</button>
-    </div>
-</section>
+    </section>
+
 
 </div>
 

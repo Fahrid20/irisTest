@@ -162,3 +162,13 @@ Route::middleware(['auth'])->group(function () {
 });
 
 
+/** Avis clients */
+Route::get('/review', [ReviewController::class, 'create'])->name('review');
+Route::post('/review', [ReviewController::class, 'store'])->name('review');
+Route::get('/review/create/{commande_id}', [ReviewController::class, 'create'])->name('review.create');
+Route::post('/review/store/{commande_id}', [ReviewController::class, 'store'])->name('review.store');
+Route::get('/latest-reviews', [ReviewController::class, 'latestReviews'])->name('latest.reviews');
+Route::get('/propos', [ReviewController::class, 'showReviews'])->name('propos');
+
+
+
