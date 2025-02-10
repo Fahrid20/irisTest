@@ -228,7 +228,7 @@
                                         </form> 
  
                                         <!-- Lien de déconnexion qui soumet le formulaire --> 
-                                        <a href="javascript:void(0);" onclick="document.getElementById('logout-form').submit();">Déconnexion</a>
+                                        <a class="dropdown-item" href="javascript:void(0);" onclick="document.getElementById('logout-form').submit();">Déconnexion</a>
                                
                                     </li>
                                 </ul>

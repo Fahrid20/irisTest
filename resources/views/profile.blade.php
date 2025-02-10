@@ -165,7 +165,8 @@
                                                                             </thead>
                                                                             <tbody>
                                                                                 @foreach($commandes as $commande)
-                                                                                    <tr>
+                                                                            
+                                                                                <tr class="purchase-item" data-id="{{ $commande->id }}" data-month="{{ $commande->created_at->format('m') }}" data-year="{{ $commande->created_at->format('Y') }}">
                                                                                         <td>{{ $commande->id }}</td>
                                                                                         <td>{{ $commande->created_at->format('d/m/Y') }}</td>
                                                                                         <td>{{ number_format($commande->total, 2) }} €</td>
@@ -364,8 +365,13 @@
             console.log("Mois sélectionné :", selectedMonth);
             console.log("Année sélectionnée :", selectedYear);
 
+            // Formater le mois sélectionné à deux chiffres (ex: 1 -> 01)
+            if (selectedMonth && selectedMonth.length === 1) {
+                selectedMonth = '0' + selectedMonth;
+            }
+
             purchaseItems.forEach(item => {
-                let itemMonth = item.getAttribute('data-month');
+                let itemMonth = item.getAttribute('data-month').padStart(2, '0'); // Formater le mois à 2 chiffres
                 let itemYear = item.getAttribute('data-year');
 
                 let matchMonth = (selectedMonth === '' || selectedMonth == itemMonth);
@@ -385,16 +391,12 @@
 
 </script>
 
-
-<script> 
-
-    function toggleDetails(id) {
-        let row = document.getElementById('details-' + id);
-        if (row) {
-            row.classList.toggle('d-none');
-        } else {
-            console.error("Aucun élément trouvé avec l'ID: details-" + id);
+<script>
+    function toggleDetails(commandeId) {
+        const detailsRow = document.getElementById('details-' + commandeId);
+        if (detailsRow) {
+            detailsRow.classList.toggle('d-none');
         }
     }
-
 </script>
+  
