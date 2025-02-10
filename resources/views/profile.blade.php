@@ -199,6 +199,8 @@
 
                                                                                 @endforeach
                                                                             </tbody>
+
+
                                                                         </table>
                                                                     </div>
                                                                 @endif
@@ -350,7 +352,6 @@
         const monthFilter = document.getElementById('monthFilter');
         const yearFilter = document.getElementById('yearFilter');
         const purchaseItems = document.querySelectorAll('.purchase-item');
-        const totalAmount = document.getElementById('totalAmount');
 
         toggleHistoryBtn.addEventListener('click', function () {
             purchaseHistory.classList.toggle('d-none');
@@ -359,22 +360,23 @@
         function updatePurchases() {
             let selectedMonth = monthFilter.value;
             let selectedYear = yearFilter.value;
-            let total = 0;
+
+            console.log("Mois sélectionné :", selectedMonth);
+            console.log("Année sélectionnée :", selectedYear);
 
             purchaseItems.forEach(item => {
                 let itemMonth = item.getAttribute('data-month');
                 let itemYear = item.getAttribute('data-year');
-                let amount = parseFloat(item.textContent.match(/([0-9]+\.[0-9]+)/)[0]);
-                
-                if ((selectedMonth === '' || selectedMonth === itemMonth) && (selectedYear === '' || selectedYear === itemYear)) {
+
+                let matchMonth = (selectedMonth === '' || selectedMonth == itemMonth);
+                let matchYear = (selectedYear === '' || selectedYear == itemYear);
+
+                if (matchMonth && matchYear) {
                     item.style.display = '';
-                    total += amount;
                 } else {
                     item.style.display = 'none';
                 }
             });
-
-            totalAmount.textContent = total.toFixed(2);
         }
 
         monthFilter.addEventListener('change', updatePurchases);
@@ -386,8 +388,13 @@
 
 <script> 
 
-function toggleDetails(id) {
-    let row = document.getElementById('details-' + id);
-    row.classList.toggle('d-none');
-}
+    function toggleDetails(id) {
+        let row = document.getElementById('details-' + id);
+        if (row) {
+            row.classList.toggle('d-none');
+        } else {
+            console.error("Aucun élément trouvé avec l'ID: details-" + id);
+        }
+    }
+
 </script>
