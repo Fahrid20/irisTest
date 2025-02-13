@@ -40,7 +40,7 @@ class CommandeController extends Controller
         return view('commande', compact('panier', 'total'));
     }
 
-   /* public function passerCommande(Request $request)
+    public function passerCommande(Request $request)
         {
             $request->validate([
                 'nom' => 'required|string|max:255',
@@ -92,7 +92,7 @@ class CommandeController extends Controller
 
             return redirect()->route('commande.success', ['id' => $commande->id])
                             ->with('success', 'Commande passée avec succès !');
-        }*/
+        }
 
 
 
@@ -131,7 +131,7 @@ class CommandeController extends Controller
    
    
 
-    public function passerCommande(Request $request)
+    /*public function passerCommande(Request $request)
     {
         try {
             // Validation des données
@@ -231,7 +231,7 @@ class CommandeController extends Controller
             Log::error('Erreur inattendue : ' . $e->getMessage());
             return back()->with('error', 'Une erreur inattendue est survenue. Veuillez réessayer.');
         }
-    }
+    }*/
 }
 
 
