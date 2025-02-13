@@ -35,6 +35,10 @@ Route::get('/', function () {
     return view('index');
 });
 
+Route::middleware(['auth', 'isAdmin'])->group(function () {
+    Route::get('/isAdmin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+});
+
 // Routes de login
 Route::get('/login', [AuthManager::class, 'login'])->name('login');
 Route::post('/login', [AuthManager::class, 'loginPost'])->name('login.post');

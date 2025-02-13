@@ -203,6 +203,11 @@
                             </a>
                         </li>
 
+                            <!-- Vérifier si l'utilisateur est admin -->
+                        @if(Auth::user()->role === 'admin')
+                            <li class="nav-item"><a class="nav-link" href="{{ route('admin.dashboard') }}">Dashboard</a></li>
+                        @endif
+
 
                         <li class="nav-item"><a class="nav-link" href="{{ route('propos') }}">A propos</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{ route('pricing') }}">Promotions</a></li>
@@ -214,6 +219,10 @@
                                     {{ Auth::user()->name }}
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                          <!-- Vérifier si l'utilisateur est admin -->
+                                    @if(Auth::user()->role === 'admin')
+                                        <li class="nav-item"><a class="nav-link" href="{{ route('admin.dashboard') }}">Dashboard</a></li>
+                                    @endif
                                     <li><a class="dropdown-item" href="{{ route('produits') }}">{{ __('Produits') }}</a></li>
                                     <li><a class="dropdown-item" href="{{ route('home') }}">{{ __('Home') }}</a></li>
                                     <li><a class="dropdown-item" href="{{ route('panier.afficher') }}">{{ __('Panier') }}</a></li>
