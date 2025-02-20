@@ -692,7 +692,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             <hr>
                             <p><strong>Nom :</strong> ${data.nom}</p>
                             <p><strong>Email :</strong> ${data.email}</p>
-                            <p><strong>Adresse :</strong> ${data.adresse}, ${data.ville}, ${data.code_postal}</p>
+                            
                             <p><strong>Mode de paiement :</strong> ${data.mode_paiement}</p>
                             <hr>
                             <h5 class="mt-3">🛒 Produits commandés :</h5>

@@ -17,6 +17,7 @@
                     <div class="image-container">
                         <img src="{{ asset('storage/' . $produit->image) }}" alt="{{ $produit->nom }}" class="product-image">
                         <span class="product-name">{{ $produit->nom }}</span>
+                        <li class="nav-item"><a class="nav-link" href="{{ route('produits') }}">Produits</a></li>
                     </div>
                 @endforeach
     </section>

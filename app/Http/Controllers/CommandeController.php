@@ -41,58 +41,70 @@ class CommandeController extends Controller
     }
 
     public function passerCommande(Request $request)
-        {
-            $request->validate([
-                'nom' => 'required|string|max:255',
-                'email' => 'required|email|max:255',
-                'telephone' => 'required|string|max:20',
-                'adresse' => 'required|string|max:500',
-                'ville' => 'required|string|max:255',
-                'code_postal' => 'required|string|max:10',
-                'mode_paiement' => 'required|in:carte,paypal,cash',
-                'carte_numero' => 'required_if:mode_paiement,carte|nullable|digits:16',
-                'carte_expiration' => 'required_if:mode_paiement,carte|nullable|date_format:Y-m',
-                'carte_cvv' => 'required_if:mode_paiement,carte|nullable|digits:3',
-                'paypal_email' => 'required_if:mode_paiement,paypal|nullable|email',
-            ]);
-
-            $panier = Panier::where('user_id', Auth::id())->with('produit')->get();
-            $total = $panier->sum(fn ($item) => $item->produit->prix * $item->quantite);
-
-            if ($total == 0) {
-                return redirect()->route('panier.afficher')->with('error', 'Votre panier est vide.');
-            }
-
-            // 🔹 Enregistrer la commande principale
-            $commande = Commande::create([
-                'user_id' => Auth::id(),
-                'nom' => $request->nom,
-                'email' => $request->email,
-                'telephone' => $request->telephone,
-                'adresse' => $request->adresse,
-                'ville' => $request->ville,
-                'code_postal' => $request->code_postal,
-                'mode_paiement' => $request->mode_paiement,
-                'total' => $total,
-                'statut' => 'en attente',
-            ]);
-
-            // 🔹 Enregistrer chaque produit commandé dans `commande_details`
-            foreach ($panier as $item) {
-                CommandeDetail::create([
-                    'commande_id' => $commande->id,
-                    'produit_id' => $item->produit->id,
-                    'quantite' => $item->quantite,
-                    'prix_unitaire' => $item->produit->prix,
-                ]);
-            }
-
-            // 🔹 Vider le panier après validation
-            Panier::where('user_id', Auth::id())->delete();
-
-            return redirect()->route('commande.success', ['id' => $commande->id])
-                            ->with('success', 'Commande passée avec succès !');
+    {
+        $request->validate([
+            'nom' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'telephone' => 'required|string|max:20',
+            'adresse' => 'required|string|max:500',
+            'ville' => 'required|string|max:255',
+            'code_postal' => 'required|string|max:10',
+            'mode_paiement' => 'required|in:carte,paypal,cash',
+            'carte_numero' => 'required_if:mode_paiement,carte|nullable|digits:16',
+            'carte_expiration' => 'required_if:mode_paiement,carte|nullable|date_format:Y-m',
+            'carte_cvv' => 'required_if:mode_paiement,carte|nullable|digits:3',
+            'paypal_email' => 'required_if:mode_paiement,paypal|nullable|email',
+        ]);
+    
+        $panier = Panier::where('user_id', Auth::id())->with('produit')->get();
+        $total = $panier->sum(fn ($item) => $item->produit->prix * $item->quantite);
+    
+        if ($total == 0) {
+            return redirect()->route('panier.afficher')->with('error', 'Votre panier est vide.');
         }
+    
+        // 🔹 Enregistrer la commande principale
+        $commande = Commande::create([
+            'user_id' => Auth::id(),
+            'nom' => $request->nom,
+            'email' => $request->email,
+            'telephone' => $request->telephone,
+            'adresse' => $request->adresse,
+            'ville' => $request->ville,
+            'code_postal' => $request->code_postal,
+            'mode_paiement' => $request->mode_paiement,
+            'total' => $total,
+            'statut' => 'en attente',
+        ]);
+    
+        // 🔹 Enregistrer chaque produit commandé et mettre à jour le stock
+        foreach ($panier as $item) {
+            $produit = $item->produit;
+    
+            // Vérifier si le stock est suffisant
+            if ($produit->stock < $item->quantite) {
+                return redirect()->route('panier.afficher')->with('error', "Stock insuffisant pour le produit : {$produit->nom}.");
+            }
+    
+            // Enregistrer les détails de la commande
+            CommandeDetail::create([
+                'commande_id' => $commande->id,
+                'produit_id' => $produit->id,
+                'quantite' => $item->quantite,
+                'prix_unitaire' => $produit->prix,
+            ]);
+    
+            // Mettre à jour le stock du produit
+            $produit->decrement('stock', $item->quantite);
+        }
+    
+        // 🔹 Vider le panier après validation
+        Panier::where('user_id', Auth::id())->delete();
+    
+        return redirect()->route('commande.success', ['id' => $commande->id])
+                        ->with('success', 'Commande passée avec succès !');
+    }
+    
 
 
 

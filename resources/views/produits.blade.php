@@ -90,7 +90,7 @@
                                 @foreach($produit->caracteristiques as $caracteristique)
                                     <li>{{ $caracteristique->description }}</li>
                                     <li>couleur: {{ $caracteristique->couleur }}</li>
-                                    <li>waterproof: {{ $caracteristique->waterproof }}</li>
+                                    <li>Stock: {{ $produit->stock }}</li>
                                     <li>marque :{{ $caracteristique->marque }}</li>
                                 @endforeach
                             </ul>
